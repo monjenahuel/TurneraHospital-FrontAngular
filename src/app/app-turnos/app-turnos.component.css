@@ -1,0 +1,14 @@
+tr.fecha {
+    background-color: var(--primary);
+    font-weight: bold;
+}
+
+#switch-1{
+    background-color: var(--primary);
+}
+
+#tdFecha{
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
+}

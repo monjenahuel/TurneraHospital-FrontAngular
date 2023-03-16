@@ -1,0 +1,12 @@
+<button type="button" (click)="toggleModal()">Modal</button>
+
+<dialog class="animate__animated animate__fadeIn" [open]="modalPico()" id="ModalDePrueba">
+    <article>
+        <h2>Turno</h2>
+        <a aria-label="Close" class="close" data-target="ModalDePrueba" (click)="toggleModal()">
+        </a>
+        <div>
+            <app-registrar-turno *ngIf="modalPico()"></app-registrar-turno> 
+        </div>
+    </article>
+</dialog>

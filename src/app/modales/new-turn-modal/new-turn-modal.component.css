@@ -1,0 +1,22 @@
+article{
+    padding: 30px;
+    min-width: 700px;
+}
+
+h2{
+    /* font-weight: bold; */
+    font-style: italic;
+    color: var(--secondary)
+}
+
+
+
+@media (max-width: 700px) {
+    
+    article{
+        padding: 30px;
+        min-width: 100%;
+    }
+    
+}
+

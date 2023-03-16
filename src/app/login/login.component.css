@@ -1,0 +1,51 @@
+.form-container {
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+form {
+    margin-top: 30%;
+    padding: 20px;
+    background-color: var(--primary);
+    border-radius: 10px;
+}
+
+label {
+    display: flex;
+    margin: 20px 0px;
+    color:white;
+
+}
+
+input[type="text"], input[type="password"] {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+button {
+    margin: 20px 0px;
+    background-color: var(--secondary);
+    color: var(--primary);
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.swal2-popup{
+    background-color: rgb(3, 58, 86);
+    color: rgba(236, 243, 248, 0.74);
+    border-radius: 15px;
+}
+
+small{
+    margin-left: 10px;
+    text-align: left;
+}
+
+.inputInvalid{
+    border: solid red;
+}

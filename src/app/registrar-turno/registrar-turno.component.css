@@ -1,0 +1,21 @@
+.mb-30{
+    margin-bottom: 30px;
+}
+
+input{
+    margin-bottom: 0px;
+}
+
+select{
+    margin-bottom: 0px;
+}
+
+.ml-5{
+    margin-left: 5px;
+}
+
+.span-input-validator{
+    margin-left: 5px;
+    color: rgb(204, 18, 18);
+    font-style: italic;
+}

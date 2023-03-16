@@ -1,0 +1,21 @@
+<div class="form-container">
+    <form [formGroup]="formLogin" (submit)="send()">
+        
+        <label for="email">Email:</label>
+        <input [class.inputInvalid]="emailNoValido()" type="email" id="email" formControlName="email" autocomplete="off">
+        <small  *ngIf="emailNoValido()" style="color:red">Debe ingresar un email valido</small>
+        
+        <label for="password">Contraseña:</label>
+        <input [class.inputInvalid]="contrasenaNoValida()" type="password" id="password" formControlName="password">
+        <small  *ngIf="contrasenaNoValida()" style="color:red">El campo es obligatorio</small>
+
+        <p [hidden]="!loginFailed" style="color: rgb(238, 20, 20); font-weight: bold;">Credenciales invalidas</p>
+        
+        <button  [disabled]="formLogin.invalid" formmethod="post" type="submit">Ingresar</button> 
+
+    </form>
+        
+</div>
+
+
+<router-outlet></router-outlet>

@@ -1,0 +1,20 @@
+<div class="container">
+    <div style="width: 90%;" class="selectSearch">
+        <ng-select (change)="enviarPaciente(selectedName)" class="autocomplete" dropdownPosition="bottom"
+            [searchFn]="searchName" [items]="pacientes" [(ngModel)]="selectedName" [dropdownPosition]="'auto'">
+            <ng-template ng-label-tmp let-item="item">
+                <span *ngIf="pacienteValido()">{{item.nombre}} {{item.apellido}}</span>
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4">{{item.nombre}} {{item.apellido}} {{item.dni}}</div>
+                    </div>
+                </div>
+            </ng-template>
+        </ng-select>
+    </div>
+    <div class="buttonNew">
+        <button type="button" (click)="agregarPaciente()">+</button>
+    </div>
+</div>
