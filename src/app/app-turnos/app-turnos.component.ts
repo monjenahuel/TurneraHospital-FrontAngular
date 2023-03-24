@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { Turno } from '../clases/turno';
 import { HttpClient } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
@@ -6,8 +6,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NewTurnModalComponent } from '../modales/new-turn-modal/new-turn-modal.component';
 import { TurnoModalServicio } from '../modales/new-turn-modal/new-turn-modal.servicio';
+import { TurnoServicio } from '../Servicios/turno-servicio';
+import Swal from 'sweetalert2';
+import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
 
-
+@Injectable({
+  providedIn: 'root'
+})
 @Component({
   selector: 'app-app-turnos',
   templateUrl: './app-turnos.component.html',
@@ -15,22 +20,15 @@ import { TurnoModalServicio } from '../modales/new-turn-modal/new-turn-modal.ser
 })
 export class AppTurnosComponent {
 
-  turnos:Turno[] = [];
-
-  turnosPreCargados:Turno[] = []
-
-  regexHora:RegExp = /\d\d:\d\d/
-
   switchTurnos = new FormControl(true);
-
 
   //Two way binding
   busqueda:string = "";
   
-  constructor(private http: HttpClient, private modal: TurnoModalServicio){}
+  constructor(private http: HttpClient, private modal: TurnoModalServicio, private turnosServ: TurnoServicio, private modalPaciente:PacienteModalServicio){}
 
-  async ngOnInit(){
-    this.getAllTurnos()
+  ngOnInit(){
+    this.turnosServ.ngOnInit()
   }
 
   editarTurno(turno:Turno){
@@ -38,52 +36,67 @@ export class AppTurnosComponent {
   }
 
   eliminarTurno(turno:Turno){
-    console.log(turno)
+    Swal.fire({
+      title: '¿Seguro que desea eliminar el turno?',
+      text: "Esta accion no se puede deshacer",
+      icon: 'warning',
+      showCloseButton: true,
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Eliminar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        console.log("Eliminado")
+        this.turnosServ.deleteTurno(turno.id).subscribe(data => {
+          console.log(turno)
+          this.turnosServ.eliminarTurnoDelArray(turno)
+        })
+
+        //this.turnosServ.eliminarTurnoDelArray(turno)
+
+        Swal.fire(
+          'Listo!',
+          'El turno fue eliminado',
+          'success'
+        )
+      }
+    })
   }
 
-  getAllTurnos() {
-    const url = 'http://localhost:8080/demo-1.0-SNAPSHOT/api/turno';
-    this.http.get<Turno[]>(url).subscribe(data => {
-      this.turnos = data;
-      console.log(this.turnos)
+
+  cargarTurnosPrecargados(){
+    this.turnosServ.turnosList = this.turnosServ.turnosPreCargados
+  }
+
+
+  getSearch(search:any){
       
-      //Carga una copia de los turnos para poder filtrarlos con busquedas dinamicas
-      this.turnosPreCargados = []
-      this.turnos.forEach(t => this.turnosPreCargados.push(t))
-    });
-  }
+    this.turnosServ.turnosList = this.turnosServ.turnosPreCargados
 
-  getTurnosHoy(){
-    let currentDate:string = new Date().toJSON().slice(0, 10);
-
-    this.turnos = this.turnos.filter(t => t.fechaHora.split(' ', 2)[0] == currentDate)
-    
-    //Carga una copia de los turnos para poder filtrarlos con busquedas dinamicas
-    this.turnosPreCargados = []
-    this.turnos.forEach(t => this.turnosPreCargados.push(t))
-  }
-
-  async getSearch(search:any){
-    this.turnos = this.turnosPreCargados;
-    
-    this.turnos = this.turnos.filter(t => (
-      t.apellidoPX + " " + t.nombrePX + " " + t.dniPX + " " + 
-      t.especialidad + " " + t.especialidad + " " + t.profesional).toLowerCase()
-      .includes(search.toLowerCase())
-      )
-  }
-  
-  //Usando Form Control
-  onClickSwitch(){
-    if (this.switchTurnos.value) {
-      this.getTurnosHoy()
-    } else {
-      this.getAllTurnos()
+    this.turnosServ.turnosList = this.turnosServ.turnosList.filter(t => (
+        t.apellidoPX + " " + t.nombrePX + " " + t.dniPX + " " + 
+        t.especialidad + " " + t.especialidad + " " + t.profesional).toLowerCase()
+        .includes(search.toLowerCase())
+        )
     }
-  }
-
-  agregarTurno(){
+  
+  agregarTurnoModal(){
     this.modal.switchModal()
   }
+
+  get turnosDelService(){
+    if(this.switchTurnos.value)
+      return this.turnosServ.turnosList
+    else
+      return this.turnosServ.turnosList.filter(t => t.fechaHora.split(' ', 2)[0] == new Date().toJSON().slice(0, 10))
+
+}
+
+modalPacienteOpen(){
+  return this.modalPaciente.getModal()
+}
 
 }

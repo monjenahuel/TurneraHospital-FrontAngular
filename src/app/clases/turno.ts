@@ -28,16 +28,19 @@ export class Turno{
 
 export class TurnoCreable{
 
+    id:any;
     idPX:number;
     idProf:number;
     idEsp:number;
     fechaHora:string;
 
-    constructor(idPX:number,idEsp:number,idProf:number,fechaHora:string){
+    constructor(idPX:number,idEsp:number,idProf:number,fechaHora:string,id?:any){
         this.idPX = idPX;
         this.idProf= idProf;
         this.idEsp=idEsp;
         this.fechaHora=fechaHora;
+        //Opcional
+        this.id = id
     }
 
 }

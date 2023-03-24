@@ -1,0 +1,24 @@
+input{
+    margin-bottom: 0px;
+}
+
+label{
+    margin-top: 20px;
+}
+
+.invalidInputSpan{
+    /* background-color: rgb(241, 105, 105); */
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.invalidInputSpan span{
+    color: rgb(218, 9, 9);
+    margin-left: 5px;
+    
+}
+
+button{
+    margin-top: 40px;
+}

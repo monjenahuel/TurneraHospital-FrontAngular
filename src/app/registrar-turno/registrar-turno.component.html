@@ -24,7 +24,7 @@
       <label class="form-label" for="fecha">Fecha</label>
       <input #controlFecha="ngModel" type="date" [(ngModel)]="fechaSeleccionada" class="selectSeach" name="fecha" id="fecha">
       <div  *ngIf="fechaInvalida() && controlFecha.touched" class="animate__animated animate__shakeX">
-        <span class="span-input-validator"><small>Elija una fecha valida</small></span>
+        <span class="span-input-validator"><small>Elija una fecha valida ({{diasDisponibles.split("-")[0] + " a " + diasDisponibles.split("-")[1]  }})</small></span>
       </div>
     </div>
 
@@ -37,6 +37,16 @@
     </div>
 
     <button [disabled]="formInvalido()">{{modalConDato() ? "Modificar" : "Agregar"}}</button>
-
+    
+    <!-- Con fines de pruebas -->
+    
+    <!-- <div>
+      PX:{{selectedName | json}} <br>
+      ESP:{{especialidadSeleccionada}} <br>
+      PROF:{{profesionalSeleccionado}} <br>
+      DATE:{{fechaSeleccionada}} <br>
+      HOUR:{{horaSeleccionada}} <br>
+    </div> -->
+  
   </form>
 </div>

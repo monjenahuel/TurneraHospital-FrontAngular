@@ -1,0 +1,47 @@
+<form [formGroup]="formPX" (submit)="crearPx()">
+    <div class="nombreCompleto" style="display: flex; justify-content: space-around;">
+        <div>
+            <label for="nombre">Nombre</label>
+            <input autocomplete="off" name="nombre" formControlName="nombre" type="text" [attr.aria-invalid]="formPX.get('nombre')?.invalid && formPX.get('nombre')?.touched ? 'true' : null" />
+            <div class="invalidInputSpan animate__animated animate__fadeIn" *ngIf="formPX.get('nombre')?.invalid && formPX.get('nombre')?.touched">
+                <span>Nombre invalido</span>
+            </div>
+            
+        </div>
+        <div>
+            <label for="apellido">Apellido</label>
+            <input autocomplete="off" name="apellido" formControlName="apellido" type="text" [attr.aria-invalid]="formPX.get('apellido')?.invalid && formPX.get('apellido')?.touched ? 'true' : null"/>
+            <div class="invalidInputSpan animate__animated animate__fadeIn" *ngIf="formPX.get('apellido')?.invalid && formPX.get('apellido')?.touched">
+                <span>Apellido invalido</span>
+            </div>
+            
+        </div>
+    </div>
+
+    <label for="dni">DNI</label>
+    <input autocomplete="off" name="dni" formControlName="dni" type="number" [attr.aria-invalid]="formPX.get('dni')?.invalid && formPX.get('dni')?.touched ? 'true' : null"/>
+    <div class="invalidInputSpan animate__animated animate__fadeIn" *ngIf="formPX.get('dni')?.invalid && formPX.get('dni')?.touched">
+        <span>DNI invalido</span>
+    </div>
+    
+
+    <label for="telefono">Telefono</label>
+    <input autocomplete="off" name="telefono" formControlName="telefono" type="number" [attr.aria-invalid]="formPX.get('telefono')?.invalid && formPX.get('telefono')?.touched ? 'true' : null" />
+    <div class="invalidInputSpan animate__animated animate__fadeIn" *ngIf="formPX.get('telefono')?.invalid && formPX.get('telefono')?.touched">
+        <span>Telefono invalido</span>
+    </div>
+    
+
+    <label for="email">E-mail</label>
+    <input autocomplete="off" name="email" formControlName="email" type="email" [attr.aria-invalid]="formPX.get('email')?.invalid && formPX.get('email')?.touched ? 'true' : null"/>
+    <div class="invalidInputSpan animate__animated animate__fadeIn" *ngIf="formPX.get('email')?.invalid && formPX.get('email')?.touched">
+        <span>Email invalido</span>
+    </div>
+    
+    <button [disabled]="formPX.invalid">{{!modalConDato() ? "Agregar Paciente" : "Modificar Paciente"}}</button>
+
+    <!-- <div>
+        {{formPX.value | json}} <br>
+        {{formPX.valid | json}}
+    </div> -->
+</form>

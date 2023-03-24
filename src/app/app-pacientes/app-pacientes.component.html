@@ -1,7 +1,7 @@
 <app-main></app-main>
 <div class="buscarYAgregar">
-    <button id="agregarPx">Agregar Paciente</button>
-    <input class="search" type="search" name="searchpx" id="searchpx" placeholder="Buscar">
+    <button (click)="agregarPxModal()" id="agregarPx">Agregar Paciente</button>
+    <input [(ngModel)]="busqueda" (ngModelChange)="getSearch(busqueda)" class="search" type="search" name="searchpx" id="searchpx" placeholder="Buscar">
 </div>
 
 <table>
@@ -12,14 +12,28 @@
             <th>Telefono</th>
             <th>Email</th>
             <th>Editar</th>
+            <th>Eliminar</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Sin resultados</td>
-        </tr>
+        <ng-container *ngFor="let paciente of pacientes">
+            <tr>
+                <td>{{paciente.apellido}} {{paciente.nombre}}</td>
+                <td>{{paciente.dni}}</td>
+                <td>{{paciente.telefono}}</td>
+                <td>{{paciente.email}}</td>
+                <td class="acciones">
+                    <i (click)="editarPaciente(paciente)" class="fa-solid fa-pen"></i>
+                </td>
+                <td class="acciones">
+                    <i (click)="eliminarPaciente(paciente)" class="fa-solid fa-trash"></i>
+                </td>
+            </tr>
+        </ng-container>
     
         
     </tbody>
     
 </table>
+
+<app-new-paciente-modal></app-new-paciente-modal>

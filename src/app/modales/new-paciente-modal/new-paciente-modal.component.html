@@ -2,11 +2,11 @@
 
 <dialog class="animate__animated animate__fadeIn" [open]="modalPico()" id="ModalDePrueba">
     <article>
-        <h2>Turno</h2>
+        <h2>Paciente</h2>
         <a aria-label="Close" class="close" data-target="ModalDePrueba" (click)="toggleModal()">
         </a>
         <div>
-            <app-registrar-turno *ngIf="modalPico()"></app-registrar-turno> 
+            <app-registrar-paciente *ngIf="modalPico()"></app-registrar-paciente> 
         </div>
     </article>
 </dialog>

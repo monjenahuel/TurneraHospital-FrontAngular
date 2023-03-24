@@ -1,15 +1,15 @@
 <app-main></app-main>
 <div class="buscarYAgregar">
-    <button (click)="agregarTurno()" id="agregarTurno">Agregar Turno</button>
+    <button (click)="agregarTurnoModal()" id="agregarTurno">Agregar Turno</button>
 
     <!-- Two Way Binding -->
-    <input [(ngModel)]="busqueda" (ngModelChange)='getSearch(busqueda)' class="search" type="search" name="search" id="search" placeholder="Buscar" />
+    <input [(ngModel)]="busqueda" (ngModelChange)='getSearch(busqueda)' class="search" type="search" name="search" id="search" placeholder="Buscar turno" />
 
     <div id="switchTurno">
         <label for="switch-1">
             Hoy
             <!-- Usando Form Control -->
-            <input (click)='onClickSwitch()' type="checkbox" [formControl]="switchTurnos" id="switch-1" name="switch-1" role="switch"/>
+            <input type="checkbox" [formControl]="switchTurnos" id="switch-1" name="switch-1" role="switch"/>
             Todos
         </label>
     </div>
@@ -29,9 +29,9 @@
         </tr>
     </thead>
         <tbody>
-            <ng-container *ngFor="let turno of turnos; let i = index">
+            <ng-container *ngFor="let turno of turnosDelService; let i = index">
                 <ng-container
-                    *ngIf="i == 0 || (turno.fechaHora | date: 'dd/MM/YYYY') !== (turnos[i-1].fechaHora | date: 'dd/MM/YYYY')">
+                    *ngIf="i == 0 || (turno.fechaHora | date: 'dd/MM/YYYY') !== (turnosDelService[i-1].fechaHora | date: 'dd/MM/YYYY')">
                     <tr class="fecha">
                         <td></td>
                         <td></td>
@@ -50,9 +50,7 @@
                     <td>{{ turno.especialidad }}</td>
                     <td>{{ turno.profesional }}</td>
                     <td>{{turno.fechaHora | date: 'dd/MM/YYYY'}}</td>
-                    <td>{{turno.fechaHora | date: 'HH:MM'}}</td>
-                    <!-- <td>{{ turno.fechaHora.split(" ", 2)[0] }}</td>
-                    <td>{{ turno.fechaHora.split(" ", 2)[1].match(regexHora) }}</td> -->
+                    <td>{{turno.fechaHora | date: 'HH:mm'}}</td>
                     <td class="acciones">
                         <i (click)="editarTurno(turno)" class="fa-solid fa-pen"></i>
                     </td>
@@ -64,4 +62,5 @@
         </tbody>
 </table>
 
-<app-new-turn-modal></app-new-turn-modal>
+<app-new-turn-modal *ngIf="!modalPacienteOpen()"></app-new-turn-modal>
+<app-new-paciente-modal></app-new-paciente-modal>

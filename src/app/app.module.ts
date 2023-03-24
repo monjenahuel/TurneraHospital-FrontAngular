@@ -19,6 +19,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 import { MaterialModule } from './material.module';
 import { NewTurnModalComponent } from './modales/new-turn-modal/new-turn-modal.component';
+import { NewPacienteModalComponent } from './modales/new-paciente-modal/new-paciente-modal.component';
+import { RegistrarPacienteComponent } from './registrar-paciente/registrar-paciente.component';
 
 
 @NgModule({
@@ -30,7 +32,10 @@ import { NewTurnModalComponent } from './modales/new-turn-modal/new-turn-modal.c
     AppPacientesComponent,
     RegistrarTurnoComponent,
     SearchSelectPxComponent,
-    NewTurnModalComponent
+    NewTurnModalComponent,
+    NewPacienteModalComponent,
+    RegistrarPacienteComponent
+    
     
   ],
   imports: [

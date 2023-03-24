@@ -8,13 +8,13 @@
     margin: 0px;
 }
 
-.buttonNew{
+.buttonNewPx{
     width: 10%;
     min-width: 50px;
 }
 
 
-.buttonNew button{
+.buttonNewPx button{
     font-size: larger;
     font-weight: 500;
     margin: 0px 0px 0px 10px;

@@ -5,20 +5,20 @@ import { Turno } from '../../clases/turno';
 @Injectable({
     providedIn: 'root'
 })
-export class TurnoModalServicio {
+export class PacienteModalServicio {
 
     private modalVisible:boolean = false
 
-    private turnoPrecargado:any;
+    private pacientePrecargado:any;
 
 
-    switchModal(turno:any = undefined){
-        if(!turno){
+    switchModal(paciente:any = undefined){
+        if(!paciente){
             this.modalVisible = !this.modalVisible;
-            this.turnoPrecargado = undefined;
+            this.pacientePrecargado = undefined;
             
         }else{
-            this.turnoPrecargado = turno
+            this.pacientePrecargado = paciente
             this.modalVisible = !this.modalVisible
         }
         
@@ -28,12 +28,12 @@ export class TurnoModalServicio {
         return this.modalVisible
     }
 
-    tieneTurnoPrecargado(){
-        return this.turnoPrecargado != undefined
+    tienePacientePrecargado(){
+        return this.pacientePrecargado != undefined
     }
 
-    getTurnoPrecargado(){
-        return this.turnoPrecargado
+    getPacientePrecargado(){
+        return this.pacientePrecargado
     }
 
 

@@ -7,12 +7,15 @@ import { EspecialidadServicio } from '../Servicios/especialidad-servicio';
 import { Profesional } from '../clases/profesional';
 import { ProfesionalServicio } from '../Servicios/profesional-servicio';
 import { Turno, TurnoCreable } from '../clases/turno';
-import { TurnoServicioServicio } from '../Servicios/turno-servicio';
+import { TurnoServicio } from '../Servicios/turno-servicio';
 import { HORARIO_DISPONIBLE } from 'src/config/config';
 import { TurnoModalServicio } from '../modales/new-turn-modal/new-turn-modal.servicio';
 import Swal from 'sweetalert2';
 import { PacienteServicio } from '../Servicios/pacientes-servicio';
 import { SearchSelectPxComponent } from '../search-select-px/search-select-px.component';
+import { DIAS_DISPONIBLES } from '../../config/config';
+import { AppTurnosComponent } from '../app-turnos/app-turnos.component';
+import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
 
 
 @Component({
@@ -23,6 +26,8 @@ import { SearchSelectPxComponent } from '../search-select-px/search-select-px.co
 export class RegistrarTurnoComponent {
 
   horarioDispobible = HORARIO_DISPONIBLE
+
+  diasDisponibles = DIAS_DISPONIBLES
 
   @Output() selectedName: any;
 
@@ -41,8 +46,7 @@ export class RegistrarTurnoComponent {
 
   formInvalido() {
 
-
-    return this.especialidadSeleccionada == "" ||
+    return this.especialidadInvalida() ||
       !this.selectedName ||
       this.profesionalSeleccionado == "" ||
       this.fechaInvalida() ||
@@ -55,22 +59,24 @@ export class RegistrarTurnoComponent {
     let añoSelec = parseInt(this.fechaSeleccionada.split('-')[0])
     let mesSelec = parseInt(this.fechaSeleccionada.split('-')[1])
     let diaSelec = parseInt(this.fechaSeleccionada.split('-')[2])
+    
+    let fechaSelecParsed = new Date(this.fechaSeleccionada + " " + "15:00")
+    
+    let diaDeLaSemanaSelec = fechaSelecParsed.getDay();
 
     let fechaActual = new Date();
     let añoActual = fechaActual.getFullYear();
     let mesActual = fechaActual.getMonth() + 1;
     let diaActual = fechaActual.getDate();
 
-    //let fechaSelecParsed = new Date(22,10,2023)
-    //console.log(fechaSelecParsed)
-
-
-
+  
     return this.fechaSeleccionada == "" ||
       añoSelec < añoActual ||
       añoSelec > añoActual + 1 ||
       (añoSelec == añoActual && mesSelec < mesActual) ||
-      (añoSelec == añoActual && mesSelec == mesActual && diaSelec < diaActual)
+      (añoSelec == añoActual && mesSelec == mesActual && diaSelec < diaActual) ||
+      diaDeLaSemanaSelec == 6 ||
+      diaDeLaSemanaSelec == 0
   }
 
   horaInvalida() {
@@ -95,9 +101,10 @@ export class RegistrarTurnoComponent {
     private http: HttpClient,
     private espServicio: EspecialidadServicio,
     private profServicio: ProfesionalServicio,
-    private turnoServicio: TurnoServicioServicio,
+    private turnoServicio: TurnoServicio,
     private pxServicio: PacienteServicio,
-    private modal: TurnoModalServicio) { }
+    private modal: TurnoModalServicio,
+    private modalPaciente: PacienteModalServicio) { }
 
   pacientes: Paciente[] = []
 
@@ -107,7 +114,6 @@ export class RegistrarTurnoComponent {
 
 
   ngOnInit() {
-
 
     this.cargarEspecialidades()
 
@@ -127,7 +133,8 @@ export class RegistrarTurnoComponent {
 
         let px = arrayPacientes.filter((p: { dni: string; }) => p.dni == dniPaciente)[0];
 
-        this.buscador.setSelectedName(px);
+        this.buscador.setSelectedName(px); //Valor Mostrado en el input
+        this.selectedName = px; //Valor real del formulario
 
         ////////////////////////////
 
@@ -156,8 +163,9 @@ export class RegistrarTurnoComponent {
 
         this.horaSeleccionada = turno.fechaHora.split(" ", 2)[1];
 
+
       })
-        
+
       })
 
     }
@@ -203,7 +211,6 @@ export class RegistrarTurnoComponent {
     }
   }
 
-
   obtenerPacienteSelect(paciente: Paciente) {
     this.selectedName = paciente;
   }
@@ -224,40 +231,72 @@ export class RegistrarTurnoComponent {
   }
 
 
-  //Usando template Driven
+  //Usando template Driven???
   crearTurno(formNewTurn: any) {
-    console.log("Creando turno")
     let fechaHora = formNewTurn.form.value.fecha + " " + formNewTurn.form.value.hora
 
+    if (!this.modalConDato()){
+      
+      let turno = new TurnoCreable(
+        this.selectedName.id,
+        parseInt(formNewTurn.form.value['especialidad']),
+        parseInt(formNewTurn.form.value['profesional']),
+        fechaHora
+      )
+      
+      this.turnoServicio.addTurno(turno).subscribe(response => {
 
-    let turno = new TurnoCreable(
-      this.selectedName.id,
-      parseInt(formNewTurn.form.value['especialidad']),
-      parseInt(formNewTurn.form.value['profesional']),
-      fechaHora
-    )
+        this.turnoServicio.agregarTurnoAlArray(response)
+  
+        this.reiniciarForm()
+  
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Turno creado con exitos',
+          showConfirmButton: false,
+          timer: 1500
+        })
 
-    this.turnoServicio.addTurno(turno).subscribe(response => {
-      console.log(response);
-
-      this.reiniciarForm()
-
-      this.modal.switchModal();
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Turno creado con exito',
-        showConfirmButton: false,
-        timer: 1500
+    
+  
       })
+    }else{
+      
+      let turno = new TurnoCreable(
+        this.selectedName.id,
+        parseInt(formNewTurn.form.value['especialidad']),
+        parseInt(formNewTurn.form.value['profesional']),
+        fechaHora,
+        this.modal.getTurnoPrecargado().id
+      )
+      
+      this.turnoServicio.editTurno(turno).subscribe(response => {
+        console.log("Editando")
+        this.turnoServicio.editarTurnoDelArray(turno,response)
 
+        this.reiniciarForm()
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Turno modificado con éxito',
+          showConfirmButton: false,
+          timer: 1500
+        })
+  
+      })
+    }
 
-    })
-
-    console.log(turno)
-
+    this.modal.switchModal();
 
   }
+
+
+
+  agregarPaciente(){
+    this.modalPaciente.switchModal()
+  }
+
 
 }
 
