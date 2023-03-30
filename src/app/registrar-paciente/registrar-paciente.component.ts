@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Paciente } from '../clases/paciente';
-import { PacienteServicio } from '../Servicios/pacientes-servicio';
-import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
 import Swal from 'sweetalert2';
+import { Paciente } from '../clases/paciente';
+import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
+import { PacienteServicio } from '../Servicios/pacientes-servicio';
 
 @Component({
   selector: 'app-registrar-paciente',
@@ -82,6 +82,15 @@ export class RegistrarPacienteComponent {
           showConfirmButton: false,
           timer: 1500
         })
+
+        this.modal.switchModal()
+      },error => {
+        Swal.fire({
+          icon: 'error',
+          title: error.error.error,
+          showConfirmButton: false,
+          timer: 1500
+        })
       })
 
     }else{
@@ -98,10 +107,19 @@ export class RegistrarPacienteComponent {
           showConfirmButton: false,
           timer: 1500
         })
+
+        this.modal.switchModal()
+      },error => {
+  
+        Swal.fire({
+          icon: 'error',
+          title: error.error.error,
+          showConfirmButton: false,
+          timer: 1500
+        })
       })
     }
     
-    this.modal.switchModal()
   }
 
   

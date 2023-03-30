@@ -1,4 +1,3 @@
-import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ViewChild } from '@angular/core';
 import { RegistrarTurnoComponent } from 'src/app/registrar-turno/registrar-turno.component';
 import { TurnoModalServicio } from './new-turn-modal.servicio';

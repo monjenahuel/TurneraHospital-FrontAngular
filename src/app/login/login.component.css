@@ -1,3 +1,30 @@
+
+.componentContainer{
+    position: relative;
+    height: 100vh;
+}
+
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    opacity: 0.3;
+}
+/* 
+.video-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -5;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    opacity: 0.3;
+
+} */
+
 .form-container {
     width: 400px;
     margin: 0 auto;
@@ -26,9 +53,8 @@ input[type="text"], input[type="password"] {
 
 button {
     margin: 20px 0px;
-    background-color: var(--secondary);
-    color: var(--primary);
-    font-weight: bold;
+    background-color: rgb(26, 178, 229);
+    color: whitesmoke;
     padding: 10px 20px;
     border-radius: 5px;
     border: none;
@@ -46,6 +72,19 @@ small{
     text-align: left;
 }
 
-.inputInvalid{
-    border: solid red;
+.containerPadre {
+    display: flex;
+    align-items: center;
+    width: 700px;
+    margin: 0px auto 0px auto;
+    align-self: center;
+}
+
+
+.containerHijo{
+
+}
+
+video{
+    z-index: -1;
 }

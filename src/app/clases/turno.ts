@@ -1,46 +1,20 @@
+import { Paciente } from './paciente';
+import { Especialidad } from './especialidad';
+import { Profesional } from './profesional';
+
 export class Turno{
     id:number;
-    idPX:number;
-    idProfEsp:number;
-    nombrePX:string;
-    apellidoPX:string;
-    dniPX:string ;
-    profesional:string;
-    especialidad:string; 
     fechaHora:string;
+    paciente:Paciente;
+    especialidad:Especialidad;
+    profesional:Profesional;
 
-    
     constructor(
-    id: number, idPX: number, idProfEsp: number, nombrePX: string, apellidoPX: string,  
-    dniPX: string, profesional: string,
-    especialidad: string, fechaHora: string){
-    this.id = id;
-    this.idPX = idPX;
-    this.idProfEsp = idProfEsp;
-    this.nombrePX = nombrePX;
-    this.apellidoPX = apellidoPX;
-    this.dniPX = dniPX;
-    this.profesional = profesional;
+    paciente:Paciente,especialidad:Especialidad,profesional:Profesional, fechaHora: string,id?:any){
+    this.paciente = paciente;
     this.especialidad = especialidad;
+    this.profesional = profesional;
     this.fechaHora = fechaHora;
+    this.id = id;
 }
-}
-
-export class TurnoCreable{
-
-    id:any;
-    idPX:number;
-    idProf:number;
-    idEsp:number;
-    fechaHora:string;
-
-    constructor(idPX:number,idEsp:number,idProf:number,fechaHora:string,id?:any){
-        this.idPX = idPX;
-        this.idProf= idProf;
-        this.idEsp=idEsp;
-        this.fechaHora=fechaHora;
-        //Opcional
-        this.id = id
-    }
-
 }

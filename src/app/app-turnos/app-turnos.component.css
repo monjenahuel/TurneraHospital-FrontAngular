@@ -12,3 +12,7 @@ tr.fecha {
     font-style: italic;
     font-size: 20px;
 }
+
+.trData:hover{
+    background-color: rgb(34, 36, 37);
+}

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { Usuario } from '../clases/usuario';
+import { LoginServicioService } from '../Servicios/login-servicio.service';
 
 @Component({
   selector: 'app-login',
@@ -19,24 +22,24 @@ export class LoginComponent {
   }
   
   contrasenaNoValida(){
-      return (this.formLogin.get("password")?.value.length < 1 && this.formLogin.get('password')?.touched);
+      return (this.formLogin.get("password")?.status == "INVALID" && this.formLogin.get('password')?.touched); //this.formLogin.get("password")?.value.length < 2
   }
 
   
 
-  constructor(private formBuilder: FormBuilder, private router: Router){
+  constructor(private formBuilder: FormBuilder, private router: Router, private login:LoginServicioService){
 
   }
   
   ngOnInit(){
     this.formLogin = this.formBuilder.group({
-      email: ['admin@admin.com',//admin@admin.com
+      email: ['',
       [
         Validators.required,
         Validators.email
       ]
     ],
-    password: ['12345678',
+    password: ['',
       [
       Validators.required,
       Validators.minLength(8)
@@ -48,15 +51,35 @@ export class LoginComponent {
 
   send(){
     
-    let credencialesCorrectas = {
-      "email": "admin@admin.com",
-      "password": "12345678"
-  } 
+    let usuarioIngresado:Usuario =new Usuario(this.formLogin.get('email')?.value,this.formLogin.get('password')?.value);
 
-  if(JSON.stringify(this.formLogin.value) == JSON.stringify(credencialesCorrectas)){
+    this.login.validarUsuario(usuarioIngresado).subscribe
+    (data => {
+      Swal.fire(
+      'Credenciales Correctas',
+      'Bienvenido ' + data.username,
+      'success'
+    )
+    
+    sessionStorage.setItem("username",data.username)
+    
     this.router.navigate(["/turnos"])
-  }else{
-    this.loginFailed = true;    
-  }
+    },
+    error => {
+    
+    Swal.fire(
+      'Error!',
+      'Credenciales incorrectas',
+      'error'
+    )   
+    
+    this.loginFailed = true;
+
+    this.formLogin.reset();
+
+    this.formLogin.markAllAsTouched();
+          
+    })
+
   }
 }

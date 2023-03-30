@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Paciente } from '../clases/paciente';
 import { Observable } from 'rxjs';
+import { BASE_URL } from '../../config/config';
+import { Paciente } from '../clases/paciente';
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +16,9 @@ export class PacienteServicio {
     }
 
     
-    url = 'http://localhost:8080/demo-1.0-SNAPSHOT/api/paciente'
+
+
+    url = BASE_URL + "/pacientes"
 
 
     inicializar(){

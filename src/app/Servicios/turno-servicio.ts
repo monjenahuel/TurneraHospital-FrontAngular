@@ -1,29 +1,41 @@
-import { Injectable } from '@angular/core';
-import { Turno, TurnoCreable } from '../clases/turno';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AppTurnosComponent } from '../app-turnos/app-turnos.component';
+import { BASE_URL } from '../../config/config';
+import { Turno } from '../clases/turno';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TurnoServicio {
+  
 
   private _turnosList:Turno[] = [];
-  private _turnosPreCargados:Turno[] = []; //En vez de atributos, metodos?
+  private _turnosPreCargados:Turno[] = [];
 
-  private url:string = 'http://localhost:8080/demo-1.0-SNAPSHOT/api' + "/turno"
+  private url:string = BASE_URL + '/turnos'
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  ngOnInit(){
-    this.getTurnos().subscribe(data =>{
-      this._turnosList = data
-      this._turnosPreCargados = data
-    })
+  actualizarListaDeTunors(){
+    if(this.router.url == "/turnos"){
+      this.getTurnos().subscribe(data =>{
+        this._turnosList = data
+        this._turnosPreCargados = data
+      })
+    }else{
+      if(this.router.url == "/estadisticas")
+      this.http.get<Turno[]>(this.url + "/history").subscribe(data => {
+        this._turnosList = data
+        this._turnosPreCargados = data
+        console.log(this._turnosList)
+      })
+    }
+    
   }
 
-  addTurno(t:TurnoCreable):Observable<Turno>{
+  addTurno(t:Turno):Observable<Turno>{
     return this.http.post<Turno>(this.url,
       t,
       {
@@ -33,8 +45,9 @@ export class TurnoServicio {
     })
   }
 
-  editTurno(t:TurnoCreable):Observable<Turno>{
-    return this.http.put<Turno>(this.url +"/"+t.id,t)
+  editTurno(t:Turno):Observable<Turno>{
+    let newUrl = this.url +"/"+t.id
+    return this.http.put<Turno>(newUrl,t)
   }
 
   deleteTurno(id:number){
@@ -65,14 +78,6 @@ export class TurnoServicio {
     this._turnosList.push(response);
     //Reordenar turnos por fecha
     this._turnosList.sort((a,b) => new Date(a.fechaHora).getTime() - new Date(b.fechaHora).getTime())
-  }
-
-  editarTurnoDelArray(turno:TurnoCreable,response:Turno){
-    this._turnosList.forEach((turnoDelArray,i) => {
-      if(turnoDelArray.id == turno.id){
-        this._turnosList[i] = response
-      }
-    })
   }
 
   eliminarTurnoDelArray(turno:Turno){

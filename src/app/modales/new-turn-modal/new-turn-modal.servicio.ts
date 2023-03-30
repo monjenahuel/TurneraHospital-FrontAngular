@@ -7,33 +7,38 @@ import { Turno } from '../../clases/turno';
 })
 export class TurnoModalServicio {
 
-    private modalVisible:boolean = false
+    private modalVisible: boolean = false
 
-    private turnoPrecargado:any;
+    private turnoPrecargado: any;
 
 
-    switchModal(turno:any = undefined){
-        if(!turno){
-            this.modalVisible = !this.modalVisible;
-            this.turnoPrecargado = undefined;
-            
-        }else{
-            this.turnoPrecargado = turno
-            this.modalVisible = !this.modalVisible
-        }
+    async switchModal(turno: any = undefined) {
         
+        if(turno == undefined){
+            this.turnoPrecargado = undefined;
+        }
+
+        this.cambiarEstado()
+    }
+    
+    private cambiarEstado() {
+        this.modalVisible = !this.modalVisible;
     }
 
-    getModal():boolean{
+    getModal(): boolean {
         return this.modalVisible
     }
 
-    tieneTurnoPrecargado(){
+    tieneTurnoPrecargado() {
         return this.turnoPrecargado != undefined
     }
 
-    getTurnoPrecargado(){
+    getTurnoPrecargado() {
         return this.turnoPrecargado
+    }
+
+    preCargarTurno(turno:Turno){
+        this.turnoPrecargado = turno;
     }
 
 

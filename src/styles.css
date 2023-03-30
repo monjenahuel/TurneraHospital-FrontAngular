@@ -1,76 +1,9 @@
+
 @import "~@ng-select/ng-select/themes/default.theme.css";
-
-
 
 :root{
     --primary: #09526B;
     --secondary: #5AC9EE;
-}
-
-header{
-    padding: 0px !important; 
-    display: flex;
-    margin-bottom: 1%;
-    justify-content: space-around;
-    align-items: center;
-    height: 130px;
-    background-color: var(--primary);
-}
-
-header img{
-    max-width: 300px;
-    max-height:70px;
-}
-
-header .userImage{
-    border-radius: 50%;
-}
-
-nav{
-    width: 50%;
-}
-
-nav ul{
-    width: 100%;
-    display: flex;
-    justify-content: space-around
-}
-
-a:hover{
-    color: #d6eef6;
-}
-
-i:hover{
-    color: var(--secondary);
-}
-
-a.pagActiva:hover{
-    text-decoration: underline;
-    text-decoration-thickness: 4px;
-    text-underline-offset:15px;
-    color: #d6eef6;
-}
-
-.user{
-    display: flex;
-}
-
-.user p{
-    margin-right: 20px;
-    margin-top: 26px;    
-}
-
-.user i{
-    margin-top: 26px;    
-    margin-left: 4px;
-    height: fit-content;
-}
-
-.pagActiva{
-    text-decoration: underline;
-    text-decoration-thickness: 4px;
-    text-underline-offset:15px;
-    
 }
 
 .buscarYAgregar{
@@ -240,7 +173,7 @@ div .mat-mdc-text-field-wrapper{
 }
 
 
-/* Bajar item seleccionado del select */
+
 .ng-select .ng-select-container{
     padding: 14px !important;
     height: calc(60px) !important;
@@ -258,7 +191,7 @@ div .mat-mdc-text-field-wrapper{
     padding-top: 5px !important;
 }
 
-/* Desplegable Sin seleccionar */
+
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
     background-color:var(--background-color);
     color: rgb(255, 255, 255);
@@ -270,7 +203,7 @@ div .mat-mdc-text-field-wrapper{
     color: #333 !important;
 }
 
-/* Desplegable Seleccionado */
+
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
     background-color: #83baed;
     color: #333;
@@ -280,10 +213,10 @@ div .mat-mdc-text-field-wrapper{
     padding: 3px 10px !important;
 }
 
-/* Color del imput (Busqueda) */
+
 .ng-input input{
     color: #bac5cd !important;
-    /* background-color: rgb(230, 6, 6) !important;  Al activarlo No se puede leer el texto */
+
 }
 
 .ng-input{
@@ -310,13 +243,13 @@ div .mat-mdc-text-field-wrapper{
     background-color: var(--background-color) !important;
 }
 
-
-/* Sweet Alert */
 .swal2-popup {
-    /* background: #19191a !important; */
+
     background: #141E26 !important;
     border: #06394a solid 2px !important;
     color:#d6eef6 !important;
     
 }
+
+
 

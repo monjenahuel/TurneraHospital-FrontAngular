@@ -1,21 +1,18 @@
 import { Component, Output, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Paciente } from '../clases/paciente';
-import { Especialidad } from '../clases/especialidad';
-import { EspecialidadServicio } from '../Servicios/especialidad-servicio';
-import { Profesional } from '../clases/profesional';
-import { ProfesionalServicio } from '../Servicios/profesional-servicio';
-import { Turno, TurnoCreable } from '../clases/turno';
-import { TurnoServicio } from '../Servicios/turno-servicio';
 import { HORARIO_DISPONIBLE } from 'src/config/config';
-import { TurnoModalServicio } from '../modales/new-turn-modal/new-turn-modal.servicio';
 import Swal from 'sweetalert2';
-import { PacienteServicio } from '../Servicios/pacientes-servicio';
-import { SearchSelectPxComponent } from '../search-select-px/search-select-px.component';
 import { DIAS_DISPONIBLES } from '../../config/config';
-import { AppTurnosComponent } from '../app-turnos/app-turnos.component';
+import { Paciente } from '../clases/paciente';
+import { Profesional } from '../clases/profesional';
+import { Turno } from '../clases/turno';
 import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
+import { TurnoModalServicio } from '../modales/new-turn-modal/new-turn-modal.servicio';
+import { SearchSelectPxComponent } from '../search-select-px/search-select-px.component';
+import { EspecialidadServicio } from '../Servicios/especialidad-servicio';
+import { PacienteServicio } from '../Servicios/pacientes-servicio';
+import { ProfesionalServicio } from '../Servicios/profesional-servicio';
+import { TurnoServicio } from '../Servicios/turno-servicio';
+import { Especialidad } from '../clases/especialidad';
 
 
 @Component({
@@ -35,9 +32,10 @@ export class RegistrarTurnoComponent {
   @ViewChild(SearchSelectPxComponent) buscador: SearchSelectPxComponent;
 
 
-  especialidadSeleccionada: string = "";
 
-  profesionalSeleccionado: string = "";
+  especialidadSeleccionada: any;
+
+  profesionalSeleccionado: Profesional;
 
   fechaSeleccionada: string = "";
 
@@ -48,7 +46,7 @@ export class RegistrarTurnoComponent {
 
     return this.especialidadInvalida() ||
       !this.selectedName ||
-      this.profesionalSeleccionado == "" ||
+      this.profesionalSeleccionado == undefined ||
       this.fechaInvalida() ||
       this.horaInvalida()
 
@@ -60,7 +58,7 @@ export class RegistrarTurnoComponent {
     let mesSelec = parseInt(this.fechaSeleccionada.split('-')[1])
     let diaSelec = parseInt(this.fechaSeleccionada.split('-')[2])
     
-    let fechaSelecParsed = new Date(this.fechaSeleccionada + " " + "15:00")
+    let fechaSelecParsed = new Date(this.fechaSeleccionada + " " + "15:00") //el 15:00 es para evitar problemas con las fechas a las 00:00
     
     let diaDeLaSemanaSelec = fechaSelecParsed.getDay();
 
@@ -94,11 +92,10 @@ export class RegistrarTurnoComponent {
   }
 
   especialidadInvalida(){
-    return this.especialidadSeleccionada == "";
+    return this.especialidadSeleccionada == null;
   }
 
-  constructor(private formBuilder: FormBuilder,
-    private http: HttpClient,
+  constructor(
     private espServicio: EspecialidadServicio,
     private profServicio: ProfesionalServicio,
     private turnoServicio: TurnoServicio,
@@ -106,67 +103,67 @@ export class RegistrarTurnoComponent {
     private modal: TurnoModalServicio,
     private modalPaciente: PacienteModalServicio) { }
 
-  pacientes: Paciente[] = []
-
-  especialidades: Especialidad[] = []
-
-  profesionales: Profesional[] = []
-
+  profesionales: Profesional[];
 
   ngOnInit() {
 
-    this.cargarEspecialidades()
-
-    this.cargarProfesionales(null)
-
-    console.log("Modal con dato:",this.modalConDato())
 
     if (this.modalConDato()) {
 
-      let turno: Turno = this.modal.getTurnoPrecargado()
-      let dniPaciente = turno.dniPX
 
-      console.log({ turno })
+      let turno = this.modal.getTurnoPrecargado()
 
-      this.pxServicio.getAllPacientes().subscribe(data => {
-        let arrayPacientes = data
+      console.log("Turno com",turno)
 
-        let px = arrayPacientes.filter((p: { dni: string; }) => p.dni == dniPaciente)[0];
+      if(turno != undefined){
+        
+        let dniPaciente = turno.paciente.dni
 
-        this.buscador.setSelectedName(px); //Valor Mostrado en el input
-        this.selectedName = px; //Valor real del formulario
+          this.pxServicio.getAllPacientes().subscribe(data => {
+            let arrayPacientes = data
+    
+            let px = arrayPacientes.filter((p: { dni: string; }) => p.dni == dniPaciente)[0];
+    
+            this.buscador.setSelectedName(px); //Valor Mostrado en el input
+            this.selectedName = px; //Valor real del formulario
 
-        ////////////////////////////
+          })
+  
 
-        let nombreEsp = turno.especialidad;
-        let esp = this.especialidades.filter(e => e.nombre == nombreEsp)[0]
-        this.especialidadSeleccionada = String(esp.id);
+          let especialidadElegida = this.espServicio.especialidadesList.find(esp => esp.id == turno.especialidad.id)
 
-        ////////////////////////////////
-
-        let nombreProf = turno.profesional.split(".", 2)[1]
-      this.profServicio.getProfesionalesConEspecialidad(parseInt(this.especialidadSeleccionada)).subscribe(data =>{
-        let lista = data
-        this.profesionales = []
-
-        lista.forEach(e => {
-          this.profesionales.push(this.profServicio.transformToProf(e))
+          if(especialidadElegida != undefined){
+            this.especialidadSeleccionada = especialidadElegida;
+          }
+  
+          ///////////////////////////
+  
+          //to do: revisar
+          this.cargarProfesionales()
+  
+          this.profServicio.getProfesionalesConEspecialidad(this.especialidadSeleccionada.id).subscribe(data =>{
+          this.profesionales = data
+        
+          let prof = data.find(p => p.id == turno.profesional.id)
+  
+          if(prof != undefined){
+            this.profesionalSeleccionado = prof;  
+          }else{
+            this.profesionalSeleccionado = this.profesionales[0]
+          }        
+  
+          ///////////////////////////////////////////
+  
+          this.fechaSeleccionada = turno.fechaHora.split("T", 2)[0];
+  
+          this.horaSeleccionada = turno.fechaHora.split("T", 2)[1];
+          
+      
         })
+      }else{
+        console.log("FALLO AL CARGAR TURNO")
+      }
 
-        let prof = this.profesionales.filter(p => nombreProf.includes(p.apellido))[0]
-
-        this.profesionalSeleccionado = String(prof.id);
-
-        ///////////////////////////////////////////
-
-        this.fechaSeleccionada = turno.fechaHora.split(" ", 2)[0];
-
-        this.horaSeleccionada = turno.fechaHora.split(" ", 2)[1];
-
-
-      })
-
-      })
 
     }
   }
@@ -176,115 +173,111 @@ export class RegistrarTurnoComponent {
   }
 
 
-  cargarEspecialidades(): Especialidad[] {
-    this.espServicio.getAllEspecialidades().subscribe(data => {
-      this.especialidades = data
-    })
 
-    return this.especialidades
-  };
-
-  cargarProfesionales(evento: any){
-    this.profesionalSeleccionado = ""; //REVISAR
+  cargarProfesionales(evento?: any){
     let idEsp;
-    let genericList;
 
     if (evento) {
-      idEsp = evento.target.value
+      idEsp = this.especialidadSeleccionada.id
 
       this.profServicio.getProfesionalesConEspecialidad(idEsp).subscribe(data => {
-        genericList = data
-        this.profesionales = []
-
-        genericList.forEach(e => {
-          this.profesionales.push(this.profServicio.transformToProf(e))
-        })
-
-        //Manejo de errores en el front
+        this.profesionales = data
+    
         try {
-          this.profesionalSeleccionado = String(this.profesionales[0].id) //Se deja como seleccionado el primer valor de la lista
+          //Se deja como seleccionado el primer valor de la lista
+          this.profesionalSeleccionado = this.profesionales[0] 
         } catch (error) {
-          console.log(new Error("No se encuentran profesionales con esa especialidad"))
+          Swal.fire({
+            icon: 'error',
+            title: "No se encuentran profesionales con esa especialidad",
+            showConfirmButton: false,
+            timer: 1500
+          })
         }
 
       })
     }
   }
 
+
+
   obtenerPacienteSelect(paciente: Paciente) {
     this.selectedName = paciente;
   }
 
   reiniciarForm() {
-
-    this.selectedName = undefined;
-
-    this.especialidadSeleccionada = "";
-
-    this.profesionalSeleccionado = "";
-
-    this.fechaSeleccionada = "";
-
-    this.horaSeleccionada = "";
-
-
+    this.ngOnInit()
   }
 
 
-  //Usando template Driven???
   crearTurno(formNewTurn: any) {
-    let fechaHora = formNewTurn.form.value.fecha + " " + formNewTurn.form.value.hora
+    let fechaHora = formNewTurn.form.value.fecha + "T" + formNewTurn.form.value.hora
 
+    console.log(formNewTurn)
+    
     if (!this.modalConDato()){
       
-      let turno = new TurnoCreable(
-        this.selectedName.id,
-        parseInt(formNewTurn.form.value['especialidad']),
-        parseInt(formNewTurn.form.value['profesional']),
-        fechaHora
-      )
-      
-      this.turnoServicio.addTurno(turno).subscribe(response => {
+        let turno = new Turno(
+          this.selectedName,
+          this.especialidadSeleccionada,
+          this.profesionalSeleccionado,
+          fechaHora
+        )
 
-        this.turnoServicio.agregarTurnoAlArray(response)
-  
-        this.reiniciarForm()
-  
-  
-        Swal.fire({
-          icon: 'success',
-          title: 'Turno creado con exitos',
-          showConfirmButton: false,
-          timer: 1500
-        })
+        console.log("Turno a enviar",turno)
+        this.turnoServicio.addTurno(turno).subscribe(response => {
 
+          this.turnoServicio.actualizarListaDeTunors();
     
+          this.reiniciarForm()
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Turno creado con exitos',
+            showConfirmButton: false,
+            timer: 1500
+          })
   
-      })
+    
+        },error => {
+          Swal.fire({
+            icon: 'error',
+            title: error.error,
+            showConfirmButton: false,
+            timer: 1500
+          })
+        })
+      
     }else{
       
-      let turno = new TurnoCreable(
-        this.selectedName.id,
-        parseInt(formNewTurn.form.value['especialidad']),
-        parseInt(formNewTurn.form.value['profesional']),
-        fechaHora,
-        this.modal.getTurnoPrecargado().id
-      )
-      
-      this.turnoServicio.editTurno(turno).subscribe(response => {
-        console.log("Editando")
-        this.turnoServicio.editarTurnoDelArray(turno,response)
 
-        this.reiniciarForm()
-  
-        Swal.fire({
-          icon: 'success',
-          title: 'Turno modificado con éxito',
-          showConfirmButton: false,
-          timer: 1500
-        })
-  
+      let idTurnoPreCargado = this.modal.getTurnoPrecargado().id;
+
+
+      let turno = new Turno(
+      this.selectedName,
+      this.especialidadSeleccionada,
+      this.profesionalSeleccionado,
+      fechaHora,
+      idTurnoPreCargado
+    )
+
+    console.log("turno",turno)
+
+    this.turnoServicio.editTurno(turno).subscribe(response => {
+      this.turnoServicio.actualizarListaDeTunors(); //Reiniciar array de turnos
+
+      this.reiniciarForm()
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Turno modificado con éxito',
+        showConfirmButton: false,
+        timer: 1500
       })
+
+      })
+
     }
 
     this.modal.switchModal();
@@ -292,9 +285,20 @@ export class RegistrarTurnoComponent {
   }
 
 
-
   agregarPaciente(){
     this.modalPaciente.switchModal()
+  }
+
+  modalPacienteIsOpen(){
+    return this.modalPaciente.getModal()
+  }
+
+  get especialidades(){
+    return this.espServicio.especialidadesList;
+  }
+
+  get pacientes(){
+    return this.pxServicio.pacientesList;
   }
 
 

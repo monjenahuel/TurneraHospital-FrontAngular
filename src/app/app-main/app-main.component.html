@@ -4,14 +4,20 @@
         <ul>
             <li><a routerLink="/turnos" routerLinkActive="pagActiva">Turnos</a></li> <!-- class="pagActiva" -->
             <li><a routerLink="/pacientes" routerLinkActive="pagActiva">Pacientes</a></li>
-            <li><a routerLink="/calendario" routerLinkActive="pagActiva">Calendario</a></li>
-            <li><a routerLink="/estadisticas" routerLinkActive="pagActiva">Estadisticas</a></li>
+            <!-- <li><a routerLink="/calendario" routerLinkActive="pagActiva">Agenda</a></li> -->
+            <li><a routerLink="/estadisticas" routerLinkActive="pagActiva">Historial</a></li>
         </ul>
     </nav>
     <div class="user">
-        <p>Username</p>
-        <script>document.querySelector(".user p").textContent = sessionStorage.getItem("username")</script>
-        <img class="userImage" src="https://picsum.photos/200" alt="">
-        <i class="fa-solid fa-chevron-down"></i>
+        <p></p>
+        
+        <img class="userImage" src="https://www.dogalize.com/wp-content/uploads/2017/04/05045213ea1093a968446fc72fbc7b55-200x200.jpg" alt="">
+        <details role="list">
+            <summary  role="button">{{username}}</summary>
+            <!-- class="secondary" -->
+            <ul role="listbox">
+                <li><a (click)="logOut()" data-theme-switcher="auto">Logout</a></li>  
+            </ul>
+        </details>
     </div>
 </header>

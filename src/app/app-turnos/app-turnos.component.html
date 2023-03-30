@@ -36,7 +36,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td id="tdFecha">{{turno.fechaHora | date: 'dd/MM/YYYY'}}</td>
+                        <td id="tdFecha">{{turno.fechaHora | date: 'dd-MM-YYYY'}}</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -44,11 +44,11 @@
                     </tr>
                 </ng-container>
 
-                <tr>
-                    <td>{{ turno.apellidoPX + " " + turno.nombrePX }}</td>
-                    <td>{{ turno.dniPX }}</td>
-                    <td>{{ turno.especialidad }}</td>
-                    <td>{{ turno.profesional }}</td>
+                <tr class="trData">
+                    <td>{{ turno.paciente.apellido + " " + turno.paciente.nombre }}</td>
+                    <td>{{ turno.paciente.dni }}</td>
+                    <td>{{ turno.especialidad.nombre }}</td>
+                    <td>{{ turno.profesional.apellido + " " +turno.profesional.nombre }}</td>
                     <td>{{turno.fechaHora | date: 'dd/MM/YYYY'}}</td>
                     <td>{{turno.fechaHora | date: 'HH:mm'}}</td>
                     <td class="acciones">

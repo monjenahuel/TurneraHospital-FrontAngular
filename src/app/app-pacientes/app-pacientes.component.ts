@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { PacienteServicio } from '../Servicios/pacientes-servicio';
-import { Paciente } from '../clases/paciente';
 import Swal from 'sweetalert2';
+import { Paciente } from '../clases/paciente';
 import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
+import { PacienteServicio } from '../Servicios/pacientes-servicio';
 
 @Component({
   selector: 'app-pacientes',
@@ -31,7 +31,7 @@ export class AppPacientesComponent {
 
   eliminarPaciente(paciente:Paciente){
     Swal.fire({
-      title: '¿Seguro que desea eliminar el paciente?',
+      title: '¿Seguro que desea eliminar al paciente ' + paciente.apellido + " " +paciente.nombre + '?',
       text: "Esta accion no se puede deshacer",
       icon: 'warning',
       showCloseButton: true,
@@ -43,35 +43,42 @@ export class AppPacientesComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         
-        try {
-          this.PacienteServicio.deletePaciente(paciente.id).subscribe(data => {
-            console.log(paciente)
-            this.PacienteServicio.eliminarPacienteDelArray(paciente)
-  
-            Swal.fire(
-              'Listo!',
-              'El paciente fue eliminado',
-              'success'
-            )
-          })
-        } catch (error) {
-          console.log(error)
-        }
-        
+          this.PacienteServicio.deletePaciente(paciente.id).subscribe(
+            data => {
+              this.PacienteServicio.eliminarPacienteDelArray(paciente)
 
-        
+              Swal.fire(
+                'Listo!',
+                'El paciente fue eliminado',
+                'success'
+              )
+            },
+            error => {
+              Swal.fire(
+                'Error',
+                'El paciente tiene un turno asignado',
+                'error'
+              )
+            }
+          );
       }
     })
   }
 
-  getSearch(search:any){
-      
-    this.PacienteServicio.pacientesList = this.PacienteServicio.pacientesPreCargados
+    getSearch(search:string){
 
-    this.PacienteServicio.pacientesList = this.PacienteServicio.pacientesList.filter(t => (
-        t.apellido + " " + t.nombre + " " + t.dni + " " + t.telefono + " " + t.email).toLowerCase()
-        .includes(search.toLowerCase())
+      this.PacienteServicio.pacientesList = this.PacienteServicio.pacientesPreCargados
+
+      let palabrasBuscadas:string[] = search.split(" ")
+
+      palabrasBuscadas.forEach((palabra) => {
+
+        this.PacienteServicio.pacientesList = this.PacienteServicio.pacientesList.filter(px => 
+        JSON.stringify(px).toString().toLowerCase().includes(palabra.toLowerCase())
         )
+
+      })
+
     }
 
     agregarPxModal(){

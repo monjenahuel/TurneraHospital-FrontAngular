@@ -1,14 +1,13 @@
-import { Component, Injectable } from '@angular/core';
-import { Turno } from '../clases/turno';
 import { HttpClient } from '@angular/common/http';
+import { Component, Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NewTurnModalComponent } from '../modales/new-turn-modal/new-turn-modal.component';
+import Swal from 'sweetalert2';
+import { Turno } from '../clases/turno';
+import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
 import { TurnoModalServicio } from '../modales/new-turn-modal/new-turn-modal.servicio';
 import { TurnoServicio } from '../Servicios/turno-servicio';
-import Swal from 'sweetalert2';
-import { PacienteModalServicio } from '../modales/new-paciente-modal/new-paciente-modal-servicio';
+import { PacienteServicio } from '../Servicios/pacientes-servicio';
+import { EspecialidadServicio } from '../Servicios/especialidad-servicio';
 
 @Injectable({
   providedIn: 'root'
@@ -25,13 +24,16 @@ export class AppTurnosComponent {
   //Two way binding
   busqueda:string = "";
   
-  constructor(private http: HttpClient, private modal: TurnoModalServicio, private turnosServ: TurnoServicio, private modalPaciente:PacienteModalServicio){}
+  constructor(private http: HttpClient, private modal: TurnoModalServicio, private turnosServ: TurnoServicio, private modalPaciente:PacienteModalServicio, private pacientesServ:PacienteServicio,private especialidadServ:EspecialidadServicio){}
 
   ngOnInit(){
-    this.turnosServ.ngOnInit()
+    this.turnosServ.actualizarListaDeTunors()
+    this.pacientesServ.inicializar()
+    this.especialidadServ.inicializar()
   }
 
   editarTurno(turno:Turno){
+    this.modal.preCargarTurno(turno)
     this.modal.switchModal(turno)
   }
 
@@ -49,19 +51,16 @@ export class AppTurnosComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         
-        console.log("Eliminado")
         this.turnosServ.deleteTurno(turno.id).subscribe(data => {
-          console.log(turno)
           this.turnosServ.eliminarTurnoDelArray(turno)
+        },error =>{
+          Swal.fire(
+            'Error!',
+            error.error.error,
+            'error'
+          )
         })
 
-        //this.turnosServ.eliminarTurnoDelArray(turno)
-
-        Swal.fire(
-          'Listo!',
-          'El turno fue eliminado',
-          'success'
-        )
       }
     })
   }
@@ -72,15 +71,20 @@ export class AppTurnosComponent {
   }
 
 
-  getSearch(search:any){
-      
-    this.turnosServ.turnosList = this.turnosServ.turnosPreCargados
+  getSearch(search:string){
 
-    this.turnosServ.turnosList = this.turnosServ.turnosList.filter(t => (
-        t.apellidoPX + " " + t.nombrePX + " " + t.dniPX + " " + 
-        t.especialidad + " " + t.especialidad + " " + t.profesional).toLowerCase()
-        .includes(search.toLowerCase())
+      this.turnosServ.turnosList = this.turnosServ.turnosPreCargados
+
+      let palabrasBuscadas:string[] = search.split(" ")
+
+      palabrasBuscadas.forEach((palabra) => {
+
+      this.turnosServ.turnosList = this.turnosServ.turnosList.filter(t => 
+        JSON.stringify(t).toString().toLowerCase().includes(palabra.toLowerCase())
         )
+
+      })
+
     }
   
   agregarTurnoModal(){
@@ -91,7 +95,7 @@ export class AppTurnosComponent {
     if(this.switchTurnos.value)
       return this.turnosServ.turnosList
     else
-      return this.turnosServ.turnosList.filter(t => t.fechaHora.split(' ', 2)[0] == new Date().toJSON().slice(0, 10))
+      return this.turnosServ.turnosList.filter(t => t.fechaHora.split('T', 2)[0] == new Date().toJSON().slice(0, 10))
 
 }
 

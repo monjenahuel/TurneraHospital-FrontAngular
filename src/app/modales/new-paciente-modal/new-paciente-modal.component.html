@@ -1,12 +1,12 @@
 <!-- <button type="button" (click)="toggleModal()">Modal</button> -->
 
-<dialog class="animate__animated animate__fadeIn" [open]="modalPico()" id="ModalDePrueba">
+<dialog class="animate__animated animate__fadeIn" [open]="isOpen()" id="ModalDePrueba">
     <article>
         <h2>Paciente</h2>
         <a aria-label="Close" class="close" data-target="ModalDePrueba" (click)="toggleModal()">
         </a>
         <div>
-            <app-registrar-paciente *ngIf="modalPico()"></app-registrar-paciente> 
+            <app-registrar-paciente *ngIf="isOpen()"></app-registrar-paciente> 
         </div>
     </article>
 </dialog>

@@ -2,21 +2,21 @@
   <form #formNuevoTurno="ngForm" autocomplete="off" (ngSubmit)="crearTurno(formNuevoTurno)">
     <div class="mb-30">
       <label class="form-label" for="paciente">Paciente</label>
-      <app-search-select-px (pacienteEmiter)="obtenerPacienteSelect($event)"></app-search-select-px>
+      <app-search-select-px *ngIf="!modalPacienteIsOpen()" (pacienteEmiter)="obtenerPacienteSelect($event)"></app-search-select-px>
     </div>
 
     <div class="mb-30">
       <label class="form-label" for="especialidad">Especialidad</label>
-      <select [(ngModel)]="especialidadSeleccionada" (input)="cargarProfesionales($event)" class="selectSeach"
+      <select [(ngModel)]="especialidadSeleccionada" (ngModelChange)="cargarProfesionales($event)" class="selectSeach"
         name="especialidad" id="especialidad">
-        <option *ngFor="let esp of especialidades" value="{{esp.id}}">{{esp.nombre}}</option>
+        <option *ngFor="let esp of especialidades" [ngValue]="esp">{{esp.nombre}}</option>
       </select>
     </div>
 
     <div *ngIf="!especialidadInvalida()" class="mb-30 animate__animated animate__fadeInDown">
       <label class="form-label" for="profesional">Profesional</label>
       <select [(ngModel)]="profesionalSeleccionado" class="selectSeach" name="profesional" id="profesional">
-        <option *ngFor="let prof of profesionales" value="{{prof.id}}">Dr.{{prof.apellido}} {{prof.nombre}}</option>
+        <option *ngFor="let prof of profesionales" [ngValue]="prof">Dr.{{prof.apellido}} {{prof.nombre}}</option>
       </select>
     </div>
 
@@ -40,13 +40,17 @@
     
     <!-- Con fines de pruebas -->
     
-    <!-- <div>
+    <div>
       PX:{{selectedName | json}} <br>
-      ESP:{{especialidadSeleccionada}} <br>
-      PROF:{{profesionalSeleccionado}} <br>
+     <p>---------------------------------</p>
+      ESP:{{especialidadSeleccionada | json}} <br>
+      <p>---------------------------------</p>
+      PROF:{{profesionalSeleccionado | json}} <br>
+      <p>---------------------------------</p>
       DATE:{{fechaSeleccionada}} <br>
+      <p>---------------------------------</p>
       HOUR:{{horaSeleccionada}} <br>
-    </div> -->
+    </div>
   
   </form>
 </div>

@@ -16,7 +16,7 @@ export class NewPacienteModalComponent {
       this.Modalservicio.switchModal()
     }
   
-    modalPico(){
+    isOpen(){
       return this.Modalservicio.getModal()
     }
 

@@ -17,7 +17,6 @@ export class SearchSelectPxComponent {
   
   selectedName:any = undefined;
   
-  //pacientes!: Paciente[];
 
   @Output() pacienteEmiter = new EventEmitter<Paciente>(); 
   
@@ -29,27 +28,10 @@ export class SearchSelectPxComponent {
     return this.selectedName != undefined;
   }
 
-  pxPrecargado(){
-    return 
-  }
 
   ngOnInit(){
-    console.log("Reinit")
     this.pxServicio.inicializar()
   }
-
-
-  // ngOnInit(){
-  //   this.pacientes = this.getPxList();
-  // }
-
-// getPxList(){
-//     this.pxServicio.getAllPacientes().subscribe(data => {
-//       this.pacientes = data
-//     })
-    
-//     return this.pacientes
-//   };
 
   searchName(filter: string, item: Paciente) {
     filter = filter.toLocaleLowerCase();

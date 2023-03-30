@@ -1,21 +1,40 @@
-<div class="form-container">
-    <form [formGroup]="formLogin" (submit)="send()">
-        
-        <label for="email">Email:</label>
-        <input [class.inputInvalid]="emailNoValido()" type="email" id="email" formControlName="email" autocomplete="off">
-        <small  *ngIf="emailNoValido()" style="color:red">Debe ingresar un email valido</small>
-        
-        <label for="password">Contraseña:</label>
-        <input [class.inputInvalid]="contrasenaNoValida()" type="password" id="password" formControlName="password">
-        <small  *ngIf="contrasenaNoValida()" style="color:red">El campo es obligatorio</small>
+<div class="componentContainer">
+    <div class="containerPadre">
+        <div class="containerHijo">
+            <img src="../../assets/Sweet-medica-logo-png.png" alt="">
+        </div>
+    </div>
 
-        <p [hidden]="!loginFailed" style="color: rgb(238, 20, 20); font-weight: bold;">Credenciales invalidas</p>
-        
-        <button  [disabled]="formLogin.invalid" formmethod="post" type="submit">Ingresar</button> 
+    <div class="video-container">
+        <!-- <video src="../../assets/Video -Clinica-Demo.mp4" muted autoplay loop></video> -->
+        <video autoplay uted loop id="myVideo">
+            <source src="../../assets/VideoDemoClinica2.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+    </div>
 
-    </form>
-        
+
+    <div class="form-container">
+        <form [formGroup]="formLogin" (submit)="send()">
+            
+            <label for="email">Email:</label>
+            <input [attr.aria-invalid]="emailNoValido() ? 'true' : null" type="email" id="email" formControlName="email" autocomplete="off">
+            <small  *ngIf="emailNoValido()" style="color:rgb(186,39,41);font-weight: 400;">Debe ingresar un email valido</small>
+            
+            <label for="password">Contraseña:</label>
+            <input [attr.aria-invalid]="contrasenaNoValida() ? 'true' : null" type="password" id="password" formControlName="password">
+            <small  *ngIf="contrasenaNoValida()" style="color:rgb(186,39,41);font-weight: 400;">El campo es obligatorio</small>
+
+            <a href="mailto:nmonje@asj.com" [hidden]="!loginFailed">¿Olvidaste tu contraseña?</a>
+
+            <!-- style="color: rgb(238, 20, 20); font-weight: bold;" -->
+            
+            <button  [disabled]="formLogin.invalid" formmethod="post" type="submit">Ingresar</button> 
+
+        </form>
+            
+    </div>
+
 </div>
-
 
 <router-outlet></router-outlet>
